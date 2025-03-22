@@ -167,14 +167,23 @@ function makeDraggable(element) {
 
 navigator.permissions.query({ name: 'camera' }).then(result => {
   if (result.state === 'denied') {
-    alert('Camera access is denied. Please allow camera access in your browser settings.');
+    showModal('Camera Access Denied', 'Camera access is denied. Please allow access in your browser settings.');
     controlPanel.classList.remove('d-none');
   } else if (result.state === 'granted') {
     if (!video.srcObject) {
-      alert('Camera access is granted but video is not active. Please start the camera.');
+      showModal('Camera Not Active', 'Camera access is granted, but the video stream is not active. Please start the camera.');
       controlPanel.classList.remove('d-none');
     }
   } else {
     console.log('Camera permission is not yet granted. Waiting for user interaction.');
   }
 });
+function showModal(title, message) {
+  const modalTitle = document.getElementById('permissionModalLabel');
+  const modalBody = document.getElementById('permissionModalBody');
+  modalTitle.textContent = title;
+  modalBody.textContent = message;
+
+  const modal = new bootstrap.Modal(document.getElementById('permissionModal'));
+  modal.show();
+}
