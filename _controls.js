@@ -52,28 +52,39 @@ function sendToDatabase() {
   .catch(err => console.error('Error:', err));
 }
 
+// function toggleFullscreen() {
+//   const videoWrapper = document.querySelector('.video-wrapper');
+//   if (!document.fullscreenElement) {
+//     videoWrapper.requestFullscreen();
+//   } else {
+//     document.exitFullscreen();
+//   }
+// }
+
+//Full screen to HTML document only
 function toggleFullscreen() {
-  const videoWrapper = document.querySelector('.video-wrapper');
+  const root = document.documentElement; // full HTML document
+
   if (!document.fullscreenElement) {
-    videoWrapper.requestFullscreen();
+    if (root.requestFullscreen) {
+      root.requestFullscreen();
+    } else if (root.webkitRequestFullscreen) {
+      root.webkitRequestFullscreen();
+    } else if (root.msRequestFullscreen) {
+      root.msRequestFullscreen();
+    }
   } else {
-    document.exitFullscreen();
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
   }
 }
 
-document.addEventListener('fullscreenchange', () => {
-  if (document.fullscreenElement) {
-    infoBox.style.position = 'fixed';
-    infoBox.style.top = '20px';
-    infoBox.style.left = '20px';
-    infoBox.style.zIndex = '2000';
-    infoBox.style.cursor = 'move';
-
-// Add heading and style indicator
-
-  }
-});
-
+function infobox() {
 // Always enable draggable
 infoBox.style.width='300px'
 infoBox.style.position = 'fixed';
@@ -83,15 +94,30 @@ const videoRect = videoWrapper.getBoundingClientRect();
 infoBox.style.top = (videoRect.bottom -100) + 'px';
     const controlPanelRect = controlPanel.getBoundingClientRect();
 infoBox.style.left = videoRect.left + 'px';
-//infoBox.style.top = video.offsetTop - infoBox.offsetHeight - 20 + 'px';
-
-    //const controlPanelRect = controlPanel.getBoundingClientRect();
-//infoBox.style.left = (controlPanelRect.left + (controlPanelRect.width - infoBox.offsetWidth) / 2) + 'px';
- 
+/
 //infoBox.style.left = '20px';
 infoBox.style.zIndex = '1000';
 infoBox.style.cursor = 'move';
 makeDraggable(infoBox);
+
+}
+document.addEventListener('fullscreenchange', () => {
+  if (document.fullscreenElement) {
+    infobox()
+    // onld styling
+    // infoBox.style.position = 'fixed';
+    // infoBox.style.top = '20px';
+    // infoBox.style.left = '20px';
+    // infoBox.style.zIndex = '2000';
+    // infoBox.style.cursor = 'move';
+
+// Add heading and style indicator
+
+  }
+});
+
+infobox()
+
 // Always enable draggable
 const dragHeader = document.createElement('div');
 dragHeader.innerHTML = `
