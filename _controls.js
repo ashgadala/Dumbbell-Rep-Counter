@@ -94,7 +94,6 @@ const videoRect = videoWrapper.getBoundingClientRect();
 infoBox.style.top = (videoRect.bottom -100) + 'px';
     const controlPanelRect = controlPanel.getBoundingClientRect();
 infoBox.style.left = videoRect.left + 'px';
-/
 //infoBox.style.left = '20px';
 infoBox.style.zIndex = '1000';
 infoBox.style.cursor = 'move';
@@ -103,7 +102,7 @@ makeDraggable(infoBox);
 }
 document.addEventListener('fullscreenchange', () => {
   if (document.fullscreenElement) {
-    infobox()
+    infobox();
     // onld styling
     // infoBox.style.position = 'fixed';
     // infoBox.style.top = '20px';
@@ -116,7 +115,7 @@ document.addEventListener('fullscreenchange', () => {
   }
 });
 
-infobox()
+infobox();
 
 // Always enable draggable
 const dragHeader = document.createElement('div');
