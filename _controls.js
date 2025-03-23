@@ -36,6 +36,43 @@ async function setupCamera() {
   });
 }
 
+
+let currentFacingMode = 'user'; // 'user' for front, 'environment' for back
+
+async function startCamera(facingMode = 'user') {
+  const constraints = {
+    audio: false,
+    video: {
+      facingMode: { exact: facingMode }
+    }
+  };
+
+  try {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
+    const videoElement = document.getElementById('cameraPreview');
+    videoElement.srcObject = stream;
+    currentFacingMode = facingMode;
+
+  } catch (err) {
+    console.error('Error starting camera:', err);
+    alert('Could not access the selected camera.');
+  }
+}
+
+function flipCamera() {
+  const newFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+  startCamera(newFacingMode);
+}
+
+// Start with the front camera by default
+//startCamera();
+
+
+
 // function toggleCamera() {
 //   const modal = new bootstrap.Modal(document.getElementById('cameraToggleModal'));
 //   modal.show();
@@ -356,3 +393,18 @@ function showToast(message, color = 'bg-success') {
   const toast = new bootstrap.Toast(toastEl);
   toast.show();
 }
+
+
+
+function isMobileDevice() {
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+function showFlipButtonIfMobile() {
+  if (isMobileDevice()) {
+    document.getElementById('flipCameraBtn').classList.remove('d-none');
+  }
+}
+
+// Call this once on page load
+showFlipButtonIfMobile();

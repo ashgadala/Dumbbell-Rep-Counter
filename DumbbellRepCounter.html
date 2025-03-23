@@ -23,11 +23,22 @@
   </nav>
 
   <main>
-    <div>
+    <div style="margin: 1rem auto;
+    display: flex
+;
+    flex-direction: column;
+    align-items: center;
+">
       <button id="toggleControls" class="btn btn-outline-dark" onclick="document.getElementById('controlPanel').classList.toggle('d-none')">Show Controls ⚙️</button>
-      <div class="controls d-none" id="controlPanel">
+      <div class=" mr-2" role="group" aria-label="First group">
+      
       <button class="btn btn-primary" id="RequestCamerabtn" onclick="requestCameraAccess()">Request Camera</button>
+      <button id="flipCameraBtn" onclick="flipCamera()" class="btn btn-secondary">
+        🔄 Flip Camera</button>
       <button class="btn btn-dark" onclick="toggleCamera()">Toggle Camera</button>
+    </div>
+      <div class="controls d-none" id="controlPanel">
+     
       <button class="btn btn-warning" onclick="resetCounters()">Reset Counters</button>
       <button class="btn btn-success" onclick="sendToDatabase()">Save to DB</button>
       <button class="btn btn-outline-secondary" onclick="toggleFullscreen()">Fullscreen</button>
