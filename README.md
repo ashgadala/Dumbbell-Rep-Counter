@@ -26,8 +26,16 @@
 - Celebration - confetti fore every 10 reps
 - logging and storing every movement to session storage, Code available to switch to local storage.
 - Reset button will purge the data in browser databases.
-- 
+- Bootstrap
+    -Toast
+     
   
 # Credits:
-- #Bell Sound:https://pixabay.com/
-- #Chat GPT
+- Tensorflow.js
+- Bell Sound:https://pixabay.com/
+- Chat GPT
+- Bootstrap
+- Githup Pages
+- Font family=Inter
+- confetti.browser.js
+- Visual Studio Code
