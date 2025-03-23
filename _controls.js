@@ -43,7 +43,7 @@ async function startCamera(facingMode = 'user') {
   const constraints = {
     audio: false,
     video: {
-      facingMode: { exact: facingMode }
+      facingMode: { exact: facingMode }  //exact: facingMode //to display only facing camera
     }
   };
 

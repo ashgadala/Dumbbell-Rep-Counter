@@ -7,7 +7,15 @@ let leftUp = false, rightUp = false;
 
 async function requestCameraAccess() {
   try {
-    await setupCamera();
+    if (isMobileDevice()) {
+     // document.getElementById('flipCameraBtn').classList.remove('d-none');
+     await   startCamera();
+    }
+    if (!isMobileDevice()) {
+   await setupCamera();
+    }
+  // 
+
     video.play();
 
     if (!detector) {
