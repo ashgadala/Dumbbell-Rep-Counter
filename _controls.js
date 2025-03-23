@@ -56,12 +56,12 @@ function toggleCamera() {
   const messageEl = document.getElementById('cameraToggleModalMessage');
   const confirmBtn = document.getElementById('confirmCameraToggle');
   const isCameraOn = video.srcObject && video.srcObject.getTracks().some(track => track.readyState === 'live');
-alert(isCameraOn);
+//alert(isCameraOn);
   if (isCameraOn === true) {
     messageEl.textContent = 'The camera is about to turn off. Are you sure?';
     confirmBtn.textContent = 'Yes, Turn Off Camera';
   } else {
-    alert('else');
+    //alert('else');
     messageEl.textContent = 'The camera is about to turn on. Are you ready?';
     confirmBtn.textContent = 'Yes, Turn On Camera';
   }
