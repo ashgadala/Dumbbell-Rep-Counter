@@ -22,7 +22,7 @@ async function requestCameraAccess() {
       render();
     }
   } catch (err) {
-    alert('Camera permission denied.');
+    showModal('Camera permission denied.');
   }
 }
 
@@ -68,21 +68,38 @@ async function render() {
 
     document.getElementById('leftAngle').textContent = `${leftAngle}°`;
     document.getElementById('rightAngle').textContent = `${rightAngle}°`;
-
+    
+    // Left rep logic
     if (leftAngle < 60 && !leftUp) leftUp = true;
     if (leftAngle > 160 && leftUp) {
+      leftUp = false;
       window.leftCount++;
       document.getElementById('leftCount').textContent = window.leftCount;
-      leftUp = false;
       sound.play();
+      pulseOnce(infoBox);
+      pulseOnce(document.getElementById('overlayGlow'));
+      flashColor(canvas, '#22c55e');
+      if (leftAngle < 130 || leftAngle > 180) shakeElement(infoBox);
+      if (window.leftCount % 10 === 0) triggerConfetti();
+      logMovement('left', leftAngle);
+
     }
 
+    // Right rep logic
     if (rightAngle < 60 && !rightUp) rightUp = true;
     if (rightAngle > 160 && rightUp) {
+      rightUp = false;
       window.rightCount++;
       document.getElementById('rightCount').textContent = window.rightCount;
-      rightUp = false;
       sound.play();
+
+      pulseOnce(infoBox);
+      pulseOnce(document.getElementById('overlayGlow'));
+      flashColor(canvas, '#60a5fa');
+      if (rightAngle < 130 || rightAngle > 180) shakeElement(infoBox);
+      if (window.rightCount % 10 === 0) triggerConfetti();
+      logMovement('right', rightAngle);
+
     }
   }
 

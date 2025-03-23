@@ -7,8 +7,24 @@ const infoBox = document.getElementById('infoBox');
 let stream;
 let tracking = false;
 
+
+const storedLog = localStorage.getItem('movementLog');
+if (storedLog) {
+  movementLog.push(...JSON.parse(storedLog));
+}
+
+
 async function setupCamera() {
   stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  video.classList.add('camera-fade-in');
+
+  // Add live recording indicator
+  if (!document.getElementById('liveIndicator')) {
+    const indicator = document.createElement('div');
+    indicator.id = 'liveIndicator';
+    indicator.innerHTML = '<div style="position:absolute; top:10px; left:10px; background-color:#1e2a4a; color:#f87171; padding:0.5rem 1rem; border-radius:9999px; font-weight:bold; display:flex; align-items:center; gap:8px;"><span style="display:inline-block; width:12px; height:12px; background-color:#f87171; border-radius:50%;"></span>LIVE</div>';
+    document.querySelector('.video-wrapper').appendChild(indicator);
+  }
   video.srcObject = stream;
   return new Promise(resolve => {
     video.onloadedmetadata = () => {
@@ -20,6 +36,11 @@ async function setupCamera() {
 }
 
 function toggleCamera() {
+  const modal = new bootstrap.Modal(document.getElementById('cameraToggleModal'));
+  modal.show();
+}
+
+function confirmToggleCamera() {
   if (video.srcObject) {
     video.srcObject.getTracks().forEach(track => track.stop());
     video.srcObject = null;
@@ -27,9 +48,13 @@ function toggleCamera() {
   } else {
     requestCameraAccess();
   }
-}
+} 
+
 
 function resetCounters() {
+  localStorage.removeItem('movementLog'); // 👈 Clears browser log
+  sessionStorage.removeItem('movementLog');// 👈 Clears session log
+
   window.leftCount = 0;
   window.rightCount = 0;
   document.getElementById('leftCount').textContent = 0;
@@ -170,6 +195,7 @@ navigator.permissions.query({ name: 'camera' }).then(result => {
     showModal('Camera Access Denied', 'Camera access is denied. Please allow access in your browser settings.');
     controlPanel.classList.remove('d-none');
   } else if (result.state === 'granted') {
+    document.getElementById('RequestCamerabtn').style.display = "none"; 
     if (!video.srcObject) {
       showModal('Camera Not Active', 'Camera access is granted, but the video stream is not active. Please start the camera.');
       controlPanel.classList.remove('d-none');
@@ -186,4 +212,88 @@ function showModal(title, message) {
 
   const modal = new bootstrap.Modal(document.getElementById('permissionModal'));
   modal.show();
+}
+
+
+// function pulseShadow(element, color = '#6366f1') {
+//   element.style.transition = 'box-shadow 0.3s ease-in-out';
+
+//   let growing = true;
+//   let pulseInterval = setInterval(() => {
+//     if (growing) {
+//       element.style.boxShadow = `0 0 30px 8px ${color}`;
+//     } else {
+//       element.style.boxShadow = `0 4px 12px rgba(0,0,0,0.1)`;
+//     }
+//     growing = !growing;
+//   }, 500); // Beat every 0.5s
+
+//   // Return a function to stop the pulse if needed
+//   return () => {
+//     clearInterval(pulseInterval);
+//     element.style.boxShadow = ''; // Reset
+//   };
+// }
+
+
+
+// ✅ Pulse-once effect
+function pulseOnce(element, color = '#f1c232') {
+  element.style.transition = 'box-shadow 0.3s ease-in-out';
+  element.style.boxShadow = `0 0 30px 8px ${color}`;
+  setTimeout(() => {
+    element.style.boxShadow = 'none';
+  }, 300);
+}
+
+// ✅ Flash red/green glow for form feedback
+function flashColor(element, color) {
+  const original = element.style.boxShadow;
+  element.style.boxShadow = `0 0 25px 10px ${color}`;
+  setTimeout(() => {
+    element.style.boxShadow = original || 'none';
+  }, 300);
+}
+
+// ✅ Shake for bad form
+function shakeElement(element) {
+  element.classList.add('shake');
+  setTimeout(() => element.classList.remove('shake'), 500);
+}
+
+// ✅ Confetti burst
+function triggerConfetti() {
+  if (typeof confetti === 'function') {
+    confetti({
+      // particleCount: 100,
+      // spread: 70,
+      // origin: { y: 0.6 }
+
+      particleCount: 1000,
+      spread: 1200,
+      startVelocity: 60,
+      scalar: 1.2,
+      origin: { y: 0.6 },
+      ticks: 250
+    });
+  }
+}
+
+
+
+// ✅ Log every movement with timestamp
+const movementLog = [];
+
+function logMovement(side, angle) {
+  const log = {
+    side,
+    angle,
+    timestamp: new Date().toISOString()
+  };
+  movementLog.push(log);
+   // NEW: Save to localStorage
+   //localStorage.setItem('movementLog', JSON.stringify(movementLog));// Data persists on tab close
+   sessionStorage.setItem('movementLog', JSON.stringify(movementLog)); /// data does not persistes on tab close
+
+   console.log('Movement Logged:', log); // logs in console
 }
