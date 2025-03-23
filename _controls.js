@@ -6,6 +6,7 @@ const infoBox = document.getElementById('infoBox');
 
 let stream;
 let tracking = false;
+let isCameraActive = false;
 
 
 const storedLog = localStorage.getItem('movementLog');
@@ -35,21 +36,56 @@ async function setupCamera() {
   });
 }
 
+// function toggleCamera() {
+//   const modal = new bootstrap.Modal(document.getElementById('cameraToggleModal'));
+//   modal.show();
+// }
+
+// function confirmToggleCamera() {
+//   if (video.srcObject) {
+//     video.srcObject.getTracks().forEach(track => track.stop());
+//     video.srcObject = null;
+//     tracking = false;
+//   } else {
+//     requestCameraAccess();
+//   }
+// } 
+
 function toggleCamera() {
   const modal = new bootstrap.Modal(document.getElementById('cameraToggleModal'));
+  const messageEl = document.getElementById('cameraToggleModalMessage');
+  const confirmBtn = document.getElementById('confirmCameraToggle');
+  const isCameraOn = video.srcObject && video.srcObject.getTracks().some(track => track.readyState === 'live');
+alert(isCameraOn);
+  if (isCameraOn === true) {
+    messageEl.textContent = 'The camera is about to turn off. Are you sure?';
+    confirmBtn.textContent = 'Yes, Turn Off Camera';
+  } else {
+    alert('else');
+    messageEl.textContent = 'The camera is about to turn on. Are you ready?';
+    confirmBtn.textContent = 'Yes, Turn On Camera';
+  }
+
   modal.show();
 }
 
 function confirmToggleCamera() {
+  showLoadingOnConfirmButton();
   if (video.srcObject) {
     video.srcObject.getTracks().forEach(track => track.stop());
     video.srcObject = null;
+    setTimeout(() => hideLoadingOnConfirmButton('Yes, Turn On Camera'), 500);
+    showToast('📴 Camera turned off', 'bg-danger bg-opacity-75');
+
     tracking = false;
   } else {
-    requestCameraAccess();
-  }
-} 
+    requestCameraAccess().finally(() =>
+      setTimeout(() => hideLoadingOnConfirmButton('Yes, Turn Off Camera'), 500)
+    );
+    showToast('🎥 Camera turned on', 'bg-success bg-opacity-75');
 
+  }
+}
 
 function resetCounters() {
   localStorage.removeItem('movementLog'); // 👈 Clears browser log
@@ -296,4 +332,27 @@ function logMovement(side, angle) {
    sessionStorage.setItem('movementLog', JSON.stringify(movementLog)); /// data does not persistes on tab close
 
    console.log('Movement Logged:', log); // logs in console
+}
+function showLoadingOnConfirmButton() {
+  const confirmBtn = document.getElementById('confirmCameraToggle');
+  confirmBtn.disabled = true;
+  confirmBtn.innerHTML =
+    '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...';
+}
+
+function hideLoadingOnConfirmButton(text) {
+  const confirmBtn = document.getElementById('confirmCameraToggle');
+  confirmBtn.disabled = false;
+  confirmBtn.textContent = text;
+}
+
+function showToast(message, color = 'bg-success') {
+  const toastEl = document.getElementById('liveToast');
+  const toastMsg = document.getElementById('liveToastMessage');
+
+  toastEl.className = `toast align-items-center text-white ${color} border-0`;
+  toastMsg.textContent = message;
+
+  const toast = new bootstrap.Toast(toastEl);
+  toast.show();
 }

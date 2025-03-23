@@ -88,13 +88,25 @@
         <h5 class="modal-title" id="cameraToggleModalLabel">Camera Activation</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" id="cameraToggleModalMessage">
         The camera is about to turn on. Are you ready?
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Not Yet</button>
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="confirmToggleCamera()">Yes, Start Camera</button>
+        <button type="button" class="btn btn-primary" id="confirmCameraToggle" data-bs-dismiss="modal" onclick="confirmToggleCamera()">Yes, Start Camera</button>
       </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055">
+  <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body" id="liveToastMessage">
+        🎥 Camera turned on!
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
   </div>
 </div>
